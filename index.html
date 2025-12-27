@@ -176,7 +176,7 @@
         }
 
         body[data-theme="gradient"] {
-            --bg: radial-gradient(circle at top, #fff3da 0%, #e6f1ff 45%, #f7fbff 100%);
+            --bg: radial-gradient(circle at top, var(--bg-start, #fff3da) 0%, var(--bg-mid, #e6f1ff) 45%, var(--bg-end, #f7fbff) 100%);
             --text: #1b1f2a;
             --subtext: #3b4252;
             --muted: #576074;
@@ -196,7 +196,7 @@
         }
 
         body[data-theme="minimal"] {
-            --bg: linear-gradient(180deg, #ffffff 0%, #f3f3f0 100%);
+            --bg: linear-gradient(180deg, var(--bg-start, #ffffff) 0%, var(--bg-end, #f3f3f0) 100%);
             --text: #111111;
             --subtext: #2f2f2f;
             --muted: #4a4a4a;
@@ -220,7 +220,7 @@
         }
 
         body[data-theme="paper"] {
-            --bg: linear-gradient(120deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0)), #f7f1e6;
+            --bg: linear-gradient(120deg, var(--bg-start, rgba(255, 255, 255, 0.6)), var(--bg-end, rgba(255, 255, 255, 0))), var(--bg-base, #f7f1e6);
             --text: #3b2f25;
             --subtext: #5a4a3c;
             --muted: #6a5a4d;
@@ -623,11 +623,39 @@
         ];
 
         function changeBackgroundColor() {
-            if (document.body.dataset.theme !== 'classic') {
-                return;
-            }
             const randomColor = `hsl(${Math.random() * 360}, 50%, 80%)`;
             document.body.style.backgroundColor = randomColor;
+        }
+
+        function applyThemeBackground(theme) {
+            if (theme === 'classic') {
+                changeBackgroundColor();
+                return;
+            }
+
+            document.body.style.backgroundColor = '';
+
+            if (theme === 'gradient') {
+                const baseHue = Math.floor(Math.random() * 360);
+                document.body.style.setProperty('--bg-start', `hsl(${baseHue}, 80%, 93%)`);
+                document.body.style.setProperty('--bg-mid', `hsl(${(baseHue + 25) % 360}, 75%, 92%)`);
+                document.body.style.setProperty('--bg-end', `hsl(${(baseHue + 210) % 360}, 85%, 95%)`);
+                return;
+            }
+
+            if (theme === 'minimal') {
+                const baseHue = Math.floor(Math.random() * 360);
+                document.body.style.setProperty('--bg-start', `hsl(${baseHue}, 30%, 98%)`);
+                document.body.style.setProperty('--bg-end', `hsl(${(baseHue + 10) % 360}, 20%, 94%)`);
+                return;
+            }
+
+            if (theme === 'paper') {
+                const baseHue = 25 + Math.floor(Math.random() * 20);
+                document.body.style.setProperty('--bg-start', `hsla(${baseHue}, 40%, 95%, 0.7)`);
+                document.body.style.setProperty('--bg-end', `hsla(${(baseHue + 12) % 360}, 35%, 92%, 0.35)`);
+                document.body.style.setProperty('--bg-base', `hsl(${baseHue}, 35%, 93%)`);
+            }
         }
 
         function generateVerse() {
@@ -638,7 +666,7 @@
             document.getElementById('spanishVerse').textContent = verse.spanish;
             document.getElementById('teluguVerse').textContent = verse.telugu;
 
-            changeBackgroundColor();
+            applyThemeBackground(document.body.dataset.theme);
         }
 
         document.getElementById('togglespanish').addEventListener('change', (event) => {
@@ -652,21 +680,20 @@
         });
 
         const themeSelect = document.getElementById('themeSelect');
+        const storedTheme = localStorage.getItem('promiseVerseTheme');
+        if (storedTheme) {
+            themeSelect.value = storedTheme;
+        }
+
         themeSelect.addEventListener('change', (event) => {
             const theme = event.target.value;
+            localStorage.setItem('promiseVerseTheme', theme);
             document.body.dataset.theme = theme;
-            if (theme === 'classic') {
-                changeBackgroundColor();
-            } else {
-                document.body.style.backgroundColor = '';
-            }
+            applyThemeBackground(theme);
         });
 
         const initialTheme = themeSelect.value;
         document.body.dataset.theme = initialTheme;
-        if (initialTheme !== 'classic') {
-            document.body.style.backgroundColor = '';
-        }
 
         // Generate a verse on initial load
         generateVerse();
