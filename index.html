@@ -96,6 +96,10 @@
             color: var(--subtext);
         }
 
+        .ref {
+            white-space: nowrap;
+        }
+
         .toggle {
             margin: 0;
             font-size: 0.95rem;
@@ -658,13 +662,39 @@
             }
         }
 
+        function escapeHtml(value) {
+            return value
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function formatVerseText(text) {
+            if (!text) {
+                return '';
+            }
+
+            const match = text.match(/^(.*?)(\s*\([^()]+\)\s*)$/);
+            if (!match) {
+                return escapeHtml(text);
+            }
+
+            const bodyText = match[1].replace(/\s+$/, '');
+            const referenceText = match[2].trim();
+            const spacer = match[2].startsWith(' ') ? ' ' : '';
+
+            return `${escapeHtml(bodyText)}${spacer}<span class="ref">${escapeHtml(referenceText)}</span>`;
+        }
+
         function generateVerse() {
             const randomIndex = Math.floor(Math.random() * verses.length);
             const verse = verses[randomIndex];
 
-            document.getElementById('englishVerse').textContent = verse.english;
-            document.getElementById('spanishVerse').textContent = verse.spanish;
-            document.getElementById('teluguVerse').textContent = verse.telugu;
+            document.getElementById('englishVerse').innerHTML = formatVerseText(verse.english);
+            document.getElementById('spanishVerse').innerHTML = formatVerseText(verse.spanish);
+            document.getElementById('teluguVerse').innerHTML = formatVerseText(verse.telugu);
 
             applyThemeBackground(document.body.dataset.theme);
         }
