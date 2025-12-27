@@ -27,8 +27,26 @@
             margin: 10px;
         }
 
+        .telugu {
+            font-size: 1.2rem;
+            margin: 10px;
+        }
+
         .toggle {
-            margin: 20px;
+            margin: 0;
+            font-size: 0.95rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #2b2b2b;
+        }
+
+        .toggles {
+            display: flex;
+            gap: 14px;
+            align-items: center;
+            justify-content: center;
+            margin: 16px 0;
         }
 
         .link {
@@ -71,10 +89,18 @@
 <body>
     <div class="verse" id="englishVerse"></div>
     <div class="spanish" id="spanishVerse"></div>
+    <div class="telugu" id="teluguVerse"></div>
 
-    <label class="toggle">
-        <input type="checkbox" id="togglespanish" checked> Show Spanish
-    </label>
+
+    <div class="toggles">
+        <label class="toggle">
+            <input type="checkbox" id="togglespanish" checked> Show Spanish
+        </label>
+
+        <label class="toggle">
+            <input type="checkbox" id="toggletelugu" checked> Show Telugu
+        </label>
+    </div>
 
     <footer>
         <p>&copy; 2025 IGC Church </p>
@@ -445,6 +471,11 @@
         document.getElementById('togglespanish').addEventListener('change', (event) => {
             const spanishVerse = document.getElementById('spanishVerse');
             spanishVerse.style.display = event.target.checked ? 'block' : 'none';
+        });
+
+        document.getElementById('toggletelugu').addEventListener('change', (event) => {
+            const teluguVerse = document.getElementById('teluguVerse');
+            teluguVerse.style.display = event.target.checked ? 'block' : 'none';
         });
 
         // Generate a verse on initial load
