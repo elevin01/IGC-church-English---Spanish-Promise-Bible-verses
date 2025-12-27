@@ -5,31 +5,95 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IGC NYC Church New Year Promise Verses</title>
     <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
+            min-height: 100vh;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            transition: background-color 0.5s ease;
-            font-family: Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            transition: background-color 0.5s ease, color 0.5s ease;
+            font-family: var(--font-body);
             text-align: center;
+            padding: 32px 16px 88px;
+        }
+
+        .app {
+            width: min(720px, 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .header {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .title {
+            font-size: 0.9rem;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .theme-switch {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            color: var(--muted);
+        }
+
+        .theme-switch select {
+            appearance: none;
+            background: var(--select-bg);
+            border: 1px solid var(--select-border);
+            border-radius: 999px;
+            padding: 6px 12px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            color: var(--text);
+        }
+
+        .theme-switch select:focus {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        .card {
+            width: 100%;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: var(--card-radius);
+            padding: var(--card-padding);
+            box-shadow: var(--card-shadow);
+            transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
         }
 
         .verse {
-            font-size: 1.5rem;
-            margin: 20px;
+            font-family: var(--font-verse);
+            font-size: var(--verse-size);
+            margin: 12px 0 16px;
+            line-height: 1.6;
         }
 
-        .spanish {
-            font-size: 1.2rem;
-            margin: 10px;
-        }
-
+        .spanish,
         .telugu {
-            font-size: 1.2rem;
-            margin: 10px;
+            font-size: var(--subverse-size);
+            margin: 8px 0;
+            line-height: 1.5;
+            color: var(--subtext);
         }
 
         .toggle {
@@ -38,7 +102,11 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            color: #2b2b2b;
+            color: var(--muted);
+        }
+
+        .toggle input {
+            accent-color: var(--accent);
         }
 
         .toggles {
@@ -46,7 +114,8 @@
             gap: 14px;
             align-items: center;
             justify-content: center;
-            margin: 16px 0;
+            margin: 6px 0 10px;
+            flex-wrap: wrap;
         }
 
         .link {
@@ -64,7 +133,7 @@
             padding: 10px 20px;
             font-size: 1rem;
             border: none;
-            background-color: #007BFF;
+            background-color: #007bff;
             color: white;
             cursor: pointer;
             border-radius: 5px;
@@ -80,26 +149,127 @@
             width: 100%;
             text-align: center;
             padding: 10px;
-            background-color: #f8f9fa;
-            font-size: 0.9rem;
-            color: #6c757d;
+            background-color: var(--footer-bg);
+            font-size: 0.85rem;
+            color: var(--muted);
+            backdrop-filter: blur(4px);
+        }
+
+        body[data-theme="classic"] {
+            --bg: #ffffff;
+            --text: #111111;
+            --subtext: #2b2b2b;
+            --muted: #4a4a4a;
+            --font-body: "Helvetica Neue", "Helvetica", "Avenir", sans-serif;
+            --font-verse: "Helvetica Neue", "Helvetica", "Avenir", sans-serif;
+            --verse-size: 1.5rem;
+            --subverse-size: 1.2rem;
+            --card-bg: transparent;
+            --card-border: transparent;
+            --card-radius: 0;
+            --card-padding: 0;
+            --card-shadow: none;
+            --select-bg: #ffffff;
+            --select-border: #d0d7de;
+            --accent: #007bff;
+            --footer-bg: #f8f9fa;
+        }
+
+        body[data-theme="gradient"] {
+            --bg: radial-gradient(circle at top, #fff3da 0%, #e6f1ff 45%, #f7fbff 100%);
+            --text: #1b1f2a;
+            --subtext: #3b4252;
+            --muted: #576074;
+            --font-body: "Avenir Next", "Avenir", "Gill Sans", sans-serif;
+            --font-verse: "Garamond", "Georgia", serif;
+            --verse-size: 1.7rem;
+            --subverse-size: 1.15rem;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --card-border: rgba(255, 255, 255, 0.6);
+            --card-radius: 18px;
+            --card-padding: 28px 26px;
+            --card-shadow: 0 20px 45px rgba(20, 30, 50, 0.12);
+            --select-bg: rgba(255, 255, 255, 0.9);
+            --select-border: rgba(180, 190, 210, 0.7);
+            --accent: #f0a543;
+            --footer-bg: rgba(255, 255, 255, 0.75);
+        }
+
+        body[data-theme="minimal"] {
+            --bg: linear-gradient(180deg, #ffffff 0%, #f3f3f0 100%);
+            --text: #111111;
+            --subtext: #2f2f2f;
+            --muted: #4a4a4a;
+            --font-body: "Avenir", "Trebuchet MS", sans-serif;
+            --font-verse: "Baskerville", "Garamond", serif;
+            --verse-size: 1.9rem;
+            --subverse-size: 1.05rem;
+            --card-bg: transparent;
+            --card-border: transparent;
+            --card-radius: 0;
+            --card-padding: 0;
+            --card-shadow: none;
+            --select-bg: #ffffff;
+            --select-border: #d6d6d6;
+            --accent: #2c7a7b;
+            --footer-bg: rgba(255, 255, 255, 0.7);
+        }
+
+        body[data-theme="minimal"] .card {
+            max-width: 560px;
+        }
+
+        body[data-theme="paper"] {
+            --bg: linear-gradient(120deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0)), #f7f1e6;
+            --text: #3b2f25;
+            --subtext: #5a4a3c;
+            --muted: #6a5a4d;
+            --font-body: "Optima", "Trebuchet MS", sans-serif;
+            --font-verse: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+            --verse-size: 1.65rem;
+            --subverse-size: 1.1rem;
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --card-border: rgba(160, 130, 90, 0.25);
+            --card-radius: 14px;
+            --card-padding: 26px 24px;
+            --card-shadow: 0 14px 30px rgba(90, 70, 50, 0.14);
+            --select-bg: rgba(255, 255, 255, 0.8);
+            --select-border: rgba(160, 130, 90, 0.35);
+            --accent: #a8663b;
+            --footer-bg: rgba(247, 241, 230, 0.9);
         }
     </style>
 </head>
-<body>
-    <div class="verse" id="englishVerse"></div>
-    <div class="spanish" id="spanishVerse"></div>
-    <div class="telugu" id="teluguVerse"></div>
+<body data-theme="classic">
+    <div class="app">
+        <div class="header">
+            <div class="title">IGC Church Promise Verse</div>
+            <div class="theme-switch">
+                <label for="themeSelect">Theme</label>
+                <select id="themeSelect">
+                    <option value="classic" selected>Classic</option>
+                    <option value="gradient">Gradient Card</option>
+                    <option value="minimal">Minimal</option>
+                    <option value="paper">Warm Paper</option>
+                </select>
+            </div>
+        </div>
 
+        <div class="card">
+            <div class="verse" id="englishVerse"></div>
+            <div class="spanish" id="spanishVerse"></div>
+            <div class="telugu" id="teluguVerse"></div>
+        </div>
 
-    <div class="toggles">
-        <label class="toggle">
-            <input type="checkbox" id="togglespanish" checked> Show Spanish
-        </label>
+        <div class="toggles">
+            <label class="toggle">
+                <input type="checkbox" id="togglespanish" checked> Show Spanish
+            </label>
 
-        <label class="toggle">
-            <input type="checkbox" id="toggletelugu" checked> Show Telugu
-        </label>
+            <label class="toggle">
+                <input type="checkbox" id="toggletelugu" checked> Show Telugu
+            </label>
+        </div>
     </div>
 
     <footer>
@@ -453,6 +623,9 @@
         ];
 
         function changeBackgroundColor() {
+            if (document.body.dataset.theme !== 'classic') {
+                return;
+            }
             const randomColor = `hsl(${Math.random() * 360}, 50%, 80%)`;
             document.body.style.backgroundColor = randomColor;
         }
@@ -477,6 +650,23 @@
             const teluguVerse = document.getElementById('teluguVerse');
             teluguVerse.style.display = event.target.checked ? 'block' : 'none';
         });
+
+        const themeSelect = document.getElementById('themeSelect');
+        themeSelect.addEventListener('change', (event) => {
+            const theme = event.target.value;
+            document.body.dataset.theme = theme;
+            if (theme === 'classic') {
+                changeBackgroundColor();
+            } else {
+                document.body.style.backgroundColor = '';
+            }
+        });
+
+        const initialTheme = themeSelect.value;
+        document.body.dataset.theme = initialTheme;
+        if (initialTheme !== 'classic') {
+            document.body.style.backgroundColor = '';
+        }
 
         // Generate a verse on initial load
         generateVerse();
