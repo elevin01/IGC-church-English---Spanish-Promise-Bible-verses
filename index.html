@@ -699,15 +699,28 @@
             applyThemeBackground(document.body.dataset.theme);
         }
 
-        document.getElementById('togglespanish').addEventListener('change', (event) => {
-            const spanishVerse = document.getElementById('spanishVerse');
-            spanishVerse.style.display = event.target.checked ? 'block' : 'none';
-        });
+        function initToggle(toggleId, storageKey, targetId) {
+            const toggle = document.getElementById(toggleId);
+            const target = document.getElementById(targetId);
+            if (!toggle || !target) {
+                return;
+            }
 
-        document.getElementById('toggletelugu').addEventListener('change', (event) => {
-            const teluguVerse = document.getElementById('teluguVerse');
-            teluguVerse.style.display = event.target.checked ? 'block' : 'none';
-        });
+            const storedValue = localStorage.getItem(storageKey);
+            if (storedValue !== null) {
+                toggle.checked = storedValue === 'true';
+                target.style.display = toggle.checked ? 'block' : 'none';
+            }
+
+            toggle.addEventListener('change', (event) => {
+                const isChecked = event.target.checked;
+                target.style.display = isChecked ? 'block' : 'none';
+                localStorage.setItem(storageKey, String(isChecked));
+            });
+        }
+
+        initToggle('togglespanish', 'promiseVerseShowSpanish', 'spanishVerse');
+        initToggle('toggletelugu', 'promiseVerseShowTelugu', 'teluguVerse');
 
         const themeSelect = document.getElementById('themeSelect');
         const storedTheme = localStorage.getItem('promiseVerseTheme');
